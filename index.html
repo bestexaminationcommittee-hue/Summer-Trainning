@@ -20,7 +20,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
-    <!-- SECTION 1: LOGIN PAGE (بەشی چوونەژوورەوە) -->
+    <!-- SECTION 1: LOGIN PAGE -->
     <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div class="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6">
             
@@ -58,8 +58,7 @@
         </div>
     </div>
 
-
-    <!-- SECTION 2: CHECKIN PAGE (بەشی سەرەکی - داشبۆرد) -->
+    <!-- SECTION 2: CHECKIN PAGE (داشبۆرد) -->
     <div id="appSection" class="hidden min-h-screen">
         <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -95,16 +94,17 @@
         </main>
     </div>
 
-
     <!-- FIREBASE & SCRIPT LOGIC -->
     <script>
+        // کلیلە ڕاستەقینەکانی فایەربەیسەکەت
         const firebaseConfig = {
-            apiKey: "AIzaSyDRJHRXsrOXm78zILvHZ9tA8fphHHOmpA",
+            apiKey: "AIzaSyDRJHRXsrOXm78zILvHZ9tA8fhpbHHOmpA",
             authDomain: "summer-trainimg.firebaseapp.com",
             projectId: "summer-trainimg",
             storageBucket: "summer-trainimg.firebasestorage.app",
-            messagingSenderId: "1064679034578",
-            appId: "1:1064679034578:web:f334161e9e6a2b11a6ee33"
+            messagingSenderId: "1064679034570",
+            appId: "1:1064679034570:web:f334161e9e6a2b11a6ee33",
+            measurementId: "G-CGHQW9Z88Q"
         };
 
         if (!firebase.apps.length) {
@@ -113,7 +113,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Elements
         const loginSection = document.getElementById('loginSection');
         const appSection = document.getElementById('appSection');
         const loginForm = document.getElementById('loginForm');
@@ -132,21 +131,19 @@
             }
         }
 
-        // Auto check login status
+        // پشکنینی باری چوونەژوورەوە
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // ئەگەر بەکارهێنەر لۆگین بووبێت
                 loginSection.classList.add('hidden');
                 appSection.classList.remove('hidden');
                 userEmailDisplay.textContent = user.email;
             } else {
-                // ئەگەر بەکارهێنەر لۆگین نەبووبێت
                 appSection.classList.add('hidden');
                 loginSection.classList.remove('hidden');
             }
         });
 
-        // Login Handler
+        // هاندلەری لۆگین
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
@@ -157,7 +154,6 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                // بەرپرسیارێتی نیشاندانی لاپەڕەکە دەکەوێتە سەر onAuthStateChanged
             } catch (error) {
                 console.error("Firebase Error:", error);
                 let errorMessage = `خەتا: (${error.code})`;
@@ -170,7 +166,7 @@
             }
         });
 
-        // Logout Handler
+        // هاندلەری دەرچوون
         logoutBtn.addEventListener('click', () => {
             auth.signOut();
         });
