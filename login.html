@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چوونەژوورەوەی قوتابی</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 300px; }
+        input { display: block; margin: 15px auto; padding: 10px; width: 90%; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>چوونەژوورەوە</h2>
+    <input type="email" id="email" placeholder="ئیمەیڵ">
+    <input type="password" id="password" placeholder="پاسپۆرد">
+    <button onclick="login()">بچۆ ژوورەوە</button>
+    <p id="error-msg" style="color:red;"></p>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRJHRxsr0Xm78ziLVhZ9tA8fhpbHHOmpA",
+    authDomain: "summer-trainimg.firebaseapp.com",
+    projectId: "summer-trainimg",
+    storageBucket: "summer-trainimg.firebasestorage.app",
+    messagingSenderId: "1064679034570",
+    appId: "1:1064679034570:web:f334161e9e6a2b11a6ee33",
+    measurementId: "G-CGHQW9Z88Q"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        window.location.href = "checkin.html";
+      })
+      .catch((error) => {
+        document.getElementById('error-msg').innerText = "ئیمەیڵ یان پاسپۆرد هەڵەیە!";
+      });
+  }
+</script>
+
+</body>
+</html>
