@@ -9,9 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs (Compat v10) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <!-- Firebase SDKs (v9.23.0 Compat - سەقامگیرترین ڤێرشن) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
@@ -69,7 +69,9 @@
         };
 
         // پێناسەکردنی فایەربەیس
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
 
         const loginForm = document.getElementById('loginForm');
@@ -101,19 +103,20 @@
                 
                 showAlert('چوونەژوورەوە بەسەرکەوتوویی ئەنجامدرا!', false);
                 
-                // ناردن بۆ پەیجی دواتر دوای ١ چڕکە
                 setTimeout(() => {
-                    window.location.href = "index.html"; // یان ناوی ئەو پەیجەی دوای لۆگین دێت
+                    window.location.href = "index.html";
                 }, 1000);
 
             } catch (error) {
                 console.error("Firebase Auth Error:", error);
                 
-                let errorMessage = 'ئیمێڵ یان تێپەڕەواشە هەڵەیە!';
+                // پیشاندانی خەتای ڕاستەقینە بۆ ئەوەی ڕێک بزانین کێشەکە چییە
+                let errorMessage = `خەتا: (${error.code}) - ${error.message}`;
+                
                 if (error.code === 'auth/invalid-email') {
                     errorMessage = 'تکایە ئیمێڵێکی دروست بنووسە!';
                 } else if (error.code === 'auth/user-not-found') {
-                    errorMessage = 'ئەم ئیمێڵە لە سیستەمەکەدا بوونی نییە!';
+                    errorMessage = 'ئەم ئیمێڵە لە فایەربەیس بوونی نییە!';
                 } else if (error.code === 'auth/wrong-password') {
                     errorMessage = 'تێپەڕەواشەکە هەڵەیە!';
                 } else if (error.code === 'auth/invalid-credential') {
