@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئامادەبوون</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; text-align: center; padding: 20px; background: #f9f9f9; }
+        video { width: 100%; max-width: 400px; border-radius: 10px; background: #000; margin-top: 15px; }
+        .btn { padding: 12px 25px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        #timer { font-size: 28px; color: #d9534f; font-weight: bold; margin: 15px 0; }
+    </style>
+</head>
+<body>
+
+    <h2 id="student-name">بەخێربێیت</h2>
+    <p>داواکاری ئامادەبوونی ڕۆژانە (١ خولەک)</p>
+
+    <video id="webcam" autoplay playsinline muted></video>
+    <div id="timer">01:00</div>
+    <button class="btn" id="start-btn" onclick="startCheckIn()">دەستپێکردن (GPS + کامێرا)</button>
+    <p id="status-text"></p>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDRJHRxsr0Xm78ziLVhZ9tA8fhpbHHOmpA",
+    authDomain: "summer-trainimg.firebaseapp.com",
+    projectId: "summer-trainimg",
+    storageBucket: "summer-trainimg.firebasestorage.app",
+    messagingSenderId: "1064679034570",
+    appId: "1:1064679034570:web:f334161e9e6a2b11a6ee33",
+    measurementId: "G-CGHQW9Z88Q"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      document.getElementById('student-name').innerText = "بەخێربێیت: " + user.email;
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  async function startCheckIn() {
+    const statusText = document.getElementById('status-text');
+    const startBtn = document.getElementById('start-btn');
+    startBtn.disabled = true;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      document.getElementById('webcam').srcObject = stream;
+
+      navigator.geolocation.getCurrentPosition((pos) => {
+        statusText.innerText = `لۆکەیشن: (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+        startTimer(60, stream);
+      }, () => {
+        alert("تکایە ڕێگە بە GPS بدە!");
+        startBtn.disabled = false;
+      });
+
+    } catch (err) {
+      alert("تکایە ڕێگە بە کامێرا بدە!");
+      startBtn.disabled = false;
+    }
+  }
+
+  function startTimer(seconds, stream) {
+    let timeLeft = seconds;
+    const timerDisplay = document.getElementById('timer');
+
+    const interval = setInterval(() => {
+      timeLeft--;
+      let mins = Math.floor(timeLeft / 60);
+      let secs = timeLeft % 60;
+      timerDisplay.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        stream.getTracks().forEach(track => track.stop());
+        document.getElementById('webcam').srcObject = null;
+        document.getElementById('status-text').innerText = "ئامادەبوونەکەت بە سەرکەوتوویی نێردرا!";
+      }
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>
