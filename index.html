@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستەمی قوتابیان - ئامادەبوون و لۆکەیشن</title>
+    <title>سیستەمی ئامادەبوونی قوتابیان</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,12 +20,12 @@
     
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        #map { height: 420px; width: 100%; border-radius: 1rem; z-index: 1; }
+        #map { height: 450px; width: 100%; border-radius: 1rem; z-index: 1; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
-    <!-- SECTION 1: LOGIN PAGE -->
+    <!-- 1. LOGIN PAGE -->
     <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div class="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6">
             
@@ -34,7 +34,7 @@
                     🎓
                 </div>
                 <h1 class="text-2xl font-extrabold text-slate-800">سیستەمی قوتابیان</h1>
-                <p class="text-sm text-slate-500">تکایە ئیمێڵ و پاسۆردەکەت بنووسە</p>
+                <p class="text-sm text-slate-500">تکایە ئیمێڵ و پاسۆردەکەت بنووسە بۆ چوونەژوورەوە</p>
             </div>
 
             <div id="loginAlert" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300"></div>
@@ -60,58 +60,81 @@
         </div>
     </div>
 
-    <!-- SECTION 2: CHECKIN PAGE / DASHBOARD -->
-    <div id="appSection" class="hidden min-h-screen">
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                        🎓
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-slate-900 leading-none">سیستەمی قوتابیان</h1>
-                        <span class="text-xs text-slate-500">پشکنین و لۆکەیشنی ڕاستەوخۆ</span>
-                    </div>
+    <!-- HEADER (SHARED) -->
+    <header id="appHeader" class="hidden bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                    🎓
                 </div>
-                
-                <div class="flex items-center space-x-4 space-x-reverse">
-                    <span id="userEmailDisplay" class="text-sm font-medium text-slate-600 dir-ltr"></span>
-                    <button id="logoutBtn" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">
-                        دەرچوون
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-            
-            <!-- Info Header -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-1">بارودۆخی یوزەر</h2>
-                    <p id="statusTimeText" class="text-xs text-slate-500">کاتی ئۆنلاینبوون: لەگەڕاندایە...</p>
+                    <h1 class="font-bold text-slate-900 leading-none">سیستەمی قوتابیان</h1>
+                    <span id="roleTitle" class="text-xs text-slate-500">پشکنینی ئامادەبوون</span>
                 </div>
-                <div id="statusBadge" class="px-4 py-2 rounded-xl text-xs font-bold bg-green-50 text-green-700">
-                    🟢 ئۆنلاینە
+            </div>
+            
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <span id="userEmailDisplay" class="text-sm font-medium text-slate-600 dir-ltr"></span>
+                <button id="logoutBtn" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">
+                    دەرچوون
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. STUDENT DASHBOARD (SIMPLE VIEW) -->
+    <div id="studentSection" class="hidden max-w-lg mx-auto p-6 space-y-6 mt-8">
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-4">
+            <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-3xl">
+                📍
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">تۆمارکردنی شوێنی ڕاستەوخۆ</h2>
+            <p id="studentPermissionMsg" class="text-sm text-slate-500 leading-relaxed">
+                تکایە کاتێک داوای مۆڵەت (Allow) لێکرا، ڕێگە بپێدە بۆ چالاککردنی لۆکەیشنەکەت تا ئامادەبوونت تۆمار بێت.
+            </p>
+            <div id="studentStatusBadge" class="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-600">
+                لە هەوڵی وەرگرتنی لۆکەیشندایە...
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. ADMIN DASHBOARD (MAP & USER TRACKING) -->
+    <div id="adminSection" class="hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left: Student List & Status -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-800 text-lg flex items-center justify-between">
+                    <span>👥 لیستی قوتابیان</span>
+                    <span id="studentCount" class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-semibold">0</span>
+                </h3>
+                
+                <div id="studentListContainer" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-400 text-center py-4">لەگەڕاندایە بۆ قوتابیان...</p>
                 </div>
             </div>
 
-            <!-- Live Map Box -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-3">
+            <!-- Right: Live Map -->
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-3">
                 <div class="flex items-center justify-between">
                     <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        📍 لۆکەیشنی ڕاستەوخۆ لەسەر نەخشە
+                        📍 نەخشەی لۆکەیشنی ڕاستەوخۆی قوتابیان
                     </h3>
-                    <span id="locationCoords" class="text-xs font-mono text-slate-500">لەگەڕاندایە...</span>
+                    <span class="text-xs font-mono text-slate-400">Live Updates</span>
                 </div>
                 <div id="map"></div>
             </div>
 
-        </main>
+        </div>
+
     </div>
 
     <!-- FIREBASE & LOGIC SCRIPT -->
     <script>
+        // 🚨 ئیمێڵی ئەدمین لێرە دیاری بکە:
+        const ADMIN_EMAIL = "admin@best.inst.com";
+
         const firebaseConfig = {
             apiKey: "AIzaSyDRJHRXsrOXm78zILvHZ9tA8fhpbHHOmpA",
             authDomain: "summer-trainimg.firebaseapp.com",
@@ -130,18 +153,24 @@
 
         let currentUser = null;
         let map = null;
-        let userMarker = null;
+        let markersMap = {}; // Stores admin map markers by uid
         let locationWatchId = null;
 
+        // UI Elements
         const loginSection = document.getElementById('loginSection');
-        const appSection = document.getElementById('appSection');
+        const appHeader = document.getElementById('appHeader');
+        const studentSection = document.getElementById('studentSection');
+        const adminSection = document.getElementById('adminSection');
         const loginForm = document.getElementById('loginForm');
         const loginAlert = document.getElementById('loginAlert');
         const submitBtn = document.getElementById('submitBtn');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
-        const statusTimeText = document.getElementById('statusTimeText');
-        const locationCoords = document.getElementById('locationCoords');
+        const roleTitle = document.getElementById('roleTitle');
+        const studentPermissionMsg = document.getElementById('studentPermissionMsg');
+        const studentStatusBadge = document.getElementById('studentStatusBadge');
+        const studentListContainer = document.getElementById('studentListContainer');
+        const studentCount = document.getElementById('studentCount');
 
         function showLoginAlert(message, isError = true) {
             loginAlert.textContent = message;
@@ -154,15 +183,29 @@
             if (user) {
                 currentUser = user;
                 loginSection.classList.add('hidden');
-                appSection.classList.remove('hidden');
+                appHeader.classList.remove('hidden');
                 userEmailDisplay.textContent = user.email;
 
-                initializeSession();
+                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    // ADMIN MODE
+                    roleTitle.textContent = "پانێڵی سەرپەرشتیار (Admin)";
+                    adminSection.classList.remove('hidden');
+                    studentSection.classList.add('hidden');
+                    initAdminDashboard();
+                } else {
+                    // STUDENT MODE
+                    roleTitle.textContent = "تۆمارکردنی ئامادەبوون";
+                    studentSection.classList.remove('hidden');
+                    adminSection.classList.add('hidden');
+                    initStudentDashboard();
+                }
             } else {
                 currentUser = null;
-                appSection.classList.add('hidden');
+                appHeader.classList.add('hidden');
+                studentSection.classList.add('hidden');
+                adminSection.classList.add('hidden');
                 loginSection.classList.remove('hidden');
-                stopLocationTracking();
+                stopStudentLocationTracking();
             }
         });
 
@@ -186,8 +229,8 @@
 
         // Logout Event
         logoutBtn.addEventListener('click', async () => {
-            if (currentUser) {
-                // Update Firestore before logout
+            if (currentUser && currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                // Update Firestore for Student Offline
                 await db.collection('checkins').doc(currentUser.uid).set({
                     isOnline: false,
                     lastOfflineTime: firebase.firestore.FieldValue.serverTimestamp()
@@ -196,56 +239,26 @@
             auth.signOut();
         });
 
-        // INITIALIZE MAP & LOCATIONS
-        async function initializeSession() {
-            const loginTime = new Date();
-            statusTimeText.textContent = `کاتی ئۆنلاینبوون: ${loginTime.toLocaleTimeString('en-US')} (${loginTime.toLocaleDateString()})`;
-
-            // 1. Update Firestore status (Online)
+        // --- STUDENT LOGIC ---
+        async function initStudentDashboard() {
+            // Set online status
             await db.collection('checkins').doc(currentUser.uid).set({
                 email: currentUser.email,
                 isOnline: true,
                 lastOnlineTime: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true });
 
-            // 2. Init Map
-            initMap();
-
-            // 3. Track Live Location
-            startLiveLocationTracking();
-        }
-
-        function initMap() {
-            if (!map) {
-                map = L.map('map').setView([36.1912, 44.0091], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            }
-        }
-
-        function startLiveLocationTracking() {
+            // Watch Location
             if (navigator.geolocation) {
                 locationWatchId = navigator.geolocation.watchPosition((pos) => {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
 
-                    locationCoords.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                    studentPermissionMsg.textContent = "لۆکەیشنی مۆبایلەکەت چالاک بوو. ئامادەبوونی تۆ بە سەرکەوتوویی لە سێرڤەر تۆمارکراوە.";
+                    studentStatusBadge.textContent = "🟢 ئامادەبوونت تۆمارکراوە";
+                    studentStatusBadge.className = "inline-block px-4 py-2 rounded-xl text-xs font-bold bg-green-50 text-green-700";
 
-                    const latlng = [lat, lng];
-
-                    // Display User Name / Email on the map marker
-                    if (!userMarker) {
-                        userMarker = L.marker(latlng).addTo(map)
-                            .bindPopup(`<b>${currentUser.email}</b><br>ئێستا لێرەیە`)
-                            .openPopup();
-                    } else {
-                        userMarker.setLatLng(latlng);
-                    }
-                    map.setView(latlng, 16);
-
-                    // Update Live Location to Firestore
+                    // Send location to Firestore
                     db.collection('checkins').doc(currentUser.uid).set({
                         email: currentUser.email,
                         location: new firebase.firestore.GeoPoint(lat, lng),
@@ -253,8 +266,10 @@
                     }, { merge: true });
 
                 }, (err) => {
-                    console.warn("Geolocation error:", err);
-                    locationCoords.textContent = "کێشە لە ڕێگەپێدانی لۆکەیشن!";
+                    console.warn("Geolocation Error:", err);
+                    studentPermissionMsg.textContent = "تکایە پێرمشنی (Allow) بۆ لۆکەیشن بدە لە هێڵی سەرەوەی برۆوسەرەکەت تا ئامادەبوونت تۆمار بێت!";
+                    studentStatusBadge.textContent = "🔴 کێشە لە لۆکەیشن هەیە";
+                    studentStatusBadge.className = "inline-block px-4 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-600";
                 }, {
                     enableHighAccuracy: true,
                     maximumAge: 5000,
@@ -263,10 +278,70 @@
             }
         }
 
-        function stopLocationTracking() {
+        function stopStudentLocationTracking() {
             if (locationWatchId) {
                 navigator.geolocation.clearWatch(locationWatchId);
             }
+        }
+
+        // --- ADMIN LOGIC ---
+        function initAdminDashboard() {
+            if (!map) {
+                map = L.map('map').setView([36.1912, 44.0091], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            // Realtime Listener for All Students
+            db.collection('checkins').onSnapshot((snapshot) => {
+                studentListContainer.innerHTML = '';
+                let totalStudents = 0;
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const uid = doc.id;
+
+                    // Exclude admin from map/list if present
+                    if (data.email && data.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
+
+                    totalStudents++;
+                    const isOnline = data.isOnline ?? false;
+                    const onlineTime = data.lastOnlineTime ? new Date(data.lastOnlineTime.toDate()).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : 'نادیار';
+                    const offlineTime = data.lastOfflineTime ? new Date(data.lastOfflineTime.toDate()).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : 'نادیار';
+
+                    // 1. Render Student Item in UI List
+                    const item = document.createElement('div');
+                    item.className = "p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs";
+                    item.innerHTML = `
+                        <div class="space-y-1">
+                            <p class="font-bold text-slate-700 dir-ltr text-right">${data.email}</p>
+                            <p class="text-slate-400">کاتی ئۆنلاین: ${onlineTime} ${!isOnline ? '| کاتی ئۆفلاین: ' + offlineTime : ''}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded-lg font-bold ${isOnline ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'}">
+                            ${isOnline ? '🟢 ئۆنلاین' : '🔴 ئۆفلاین'}
+                        </span>
+                    `;
+                    studentListContainer.appendChild(item);
+
+                    // 2. Render / Update Marker on Map
+                    if (data.location) {
+                        const lat = data.location.latitude;
+                        const lng = data.location.longitude;
+                        const latlng = [lat, lng];
+
+                        if (markersMap[uid]) {
+                            markersMap[uid].setLatLng(latlng);
+                        } else {
+                            markersMap[uid] = L.marker(latlng).addTo(map)
+                                .bindPopup(`<b>${data.email}</b><br>دواین شوێن`);
+                        }
+                    }
+                });
+
+                studentCount.textContent = totalStudents;
+            });
         }
     </script>
 </body>
