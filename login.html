@@ -1,55 +1,200 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چوونەژوورەوەی قوتابی</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
-        .card { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 300px; }
-        input { display: block; margin: 15px auto; padding: 10px; width: 90%; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>چوونەژوورەوەی قوتابی - ڕاهێنانی هاوینە</title>
+  
+  <!-- زیادکردنی فۆنتی NRT -->
+  <style>
+    @font-face {
+      font-family: 'NRT';
+      src: url('NRT-Reg.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'NRT', Tahoma, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    p.subtitle {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #34495e;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #3498db;
+      background: #fff;
+      outline: none;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .error-msg {
+      color: #e74c3c;
+      margin-top: 15px;
+      font-size: 14px;
+      background: #fde8e8;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>چوونەژوورەوە</h2>
-    <input type="email" id="email" placeholder="ئیمەیڵ">
-    <input type="password" id="password" placeholder="پاسپۆرد">
-    <button onclick="login()">بچۆ ژوورەوە</button>
-    <p id="error-msg" style="color:red;"></p>
-</div>
+  <div class="login-container">
+    <div class="logo-icon">🎓</div>
+    <h2>سیستمی ئامادەبوونی قوتابیان</h2>
+    <p class="subtitle">تکایە بۆ چوونەژوورەوە زانیارییەکانت بنووسە</p>
+    
+    <div class="input-group">
+      <label for="username">ناوی بەکارهێنەر (یوزەرنەیم)</label>
+      <input type="text" id="username" placeholder="بۆ نموونە: student123" required>
+    </div>
 
-<!-- Firebase CDN -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <div class="input-group">
+      <label for="password">پاسۆرد</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+    </div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDRJHRxsr0Xm78ziLVhZ9tA8fhpbHHOmpA",
-    authDomain: "summer-trainimg.firebaseapp.com",
-    projectId: "summer-trainimg",
-    storageBucket: "summer-trainimg.firebasestorage.app",
-    messagingSenderId: "1064679034570",
-    appId: "1:1064679034570:web:f334161e9e6a2b11a6ee33",
-    measurementId: "G-CGHQW9Z88Q"
-  };
-  firebase.initializeApp(firebaseConfig);
+    <button onclick="loginUser()">چوونەژوورەوە</button>
+    <div id="error" class="error-msg"></div>
+  </div>
 
-  function login() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
-        window.location.href = "checkin.html";
-      })
-      .catch((error) => {
-        document.getElementById('error-msg').innerText = "ئیمەیڵ یان پاسپۆرد هەڵەیە!";
-      });
-  }
-</script>
+  <script>
+    // ⚠️ کلیلەکانی فایەربەیزی خۆت لێرە دابنێ
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function loginUser() {
+      const usernameInput = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error');
+
+      if (!usernameInput || !password) {
+        errorDiv.style.display = "block";
+        errorDiv.innerText = "تکایە هەردوو خانه پڕبکەرەوە!";
+        return;
+      }
+
+      // بەستنەوەی یوزەرنەیم بە ئیمێڵی دەستکرد بۆ فایەربەیس
+      const email = usernameInput.includes('@') ? usernameInput : usernameInput + "@institute.com";
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          window.location.href = "checkin.html";
+        })
+        .catch((error) => {
+          errorDiv.style.display = "block";
+          errorDiv.innerText = "ناوی بەکارهێنەر یان پاسۆرد هەڵەیە!";
+        });
+    }
+  </script>
 
 </body>
 </html>
