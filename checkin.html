@@ -1,91 +1,206 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ئامادەبوون</title>
-    <style>
-        body { font-family: Tahoma, sans-serif; text-align: center; padding: 20px; background: #f9f9f9; }
-        video { width: 100%; max-width: 400px; border-radius: 10px; background: #000; margin-top: 15px; }
-        .btn { padding: 12px 25px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
-        #timer { font-size: 28px; color: #d9534f; font-weight: bold; margin: 15px 0; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تۆمارکردنی ئامادەبوونی قوتابی</title>
+  
+  <style>
+    @font-face {
+      font-family: 'NRT';
+      src: url('NRT-Reg.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'NRT', Tahoma, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .user-info {
+      background: #eef2f7;
+      padding: 12px;
+      border-radius: 10px;
+      color: #34495e;
+      font-size: 15px;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    button.checkin-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
+    }
+
+    button.checkin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
+    }
+
+    button.logout-btn {
+      background: transparent;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-top: 25px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    button.logout-btn:hover {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .status-msg {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
 </head>
 <body>
 
-    <h2 id="student-name">بەخێربێیت</h2>
-    <p>داواکاری ئامادەبوونی ڕۆژانە (١ خولەک)</p>
+  <div class="card">
+    <div class="icon">📍</div>
+    <h2>تۆمارکردنی ئامادەبوون</h2>
+    <div class="user-info" id="userEmail">بەخێربییت...</div>
 
-    <video id="webcam" autoplay playsinline muted></video>
-    <div id="timer">01:00</div>
-    <button class="btn" id="start-btn" onclick="startCheckIn()">دەستپێکردن (GPS + کامێرا)</button>
-    <p id="status-text"></p>
+    <button class="checkin-btn" onclick="recordAttendance()">تۆمارکردنی ئامادەبوون (Check-in)</button>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <div id="status" class="status-msg"></div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDRJHRxsr0Xm78ziLVhZ9tA8fhpbHHOmpA",
-    authDomain: "summer-trainimg.firebaseapp.com",
-    projectId: "summer-trainimg",
-    storageBucket: "summer-trainimg.firebasestorage.app",
-    messagingSenderId: "1064679034570",
-    appId: "1:1064679034570:web:f334161e9e6a2b11a6ee33",
-    measurementId: "G-CGHQW9Z88Q"
-  };
-  firebase.initializeApp(firebaseConfig);
+    <br>
+    <button class="logout-btn" onclick="logout()">دەروونەچوون (Logout)</button>
+  </div>
 
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      document.getElementById('student-name').innerText = "بەخێربێیت: " + user.email;
-    } else {
-      window.location.href = "login.html";
-    }
-  });
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  async function startCheckIn() {
-    const statusText = document.getElementById('status-text');
-    const startBtn = document.getElementById('start-btn');
-    startBtn.disabled = true;
+  <script>
+    // ⚠️ کلیلەکانی فایەربەیزی خۆت لێرە دابنێ
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      document.getElementById('webcam').srcObject = stream;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-      navigator.geolocation.getCurrentPosition((pos) => {
-        statusText.innerText = `لۆکەیشن: (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
-        startTimer(60, stream);
-      }, () => {
-        alert("تکایە ڕێگە بە GPS بدە!");
-        startBtn.disabled = false;
-      });
-
-    } catch (err) {
-      alert("تکایە ڕێگە بە کامێرا بدە!");
-      startBtn.disabled = false;
-    }
-  }
-
-  function startTimer(seconds, stream) {
-    let timeLeft = seconds;
-    const timerDisplay = document.getElementById('timer');
-
-    const interval = setInterval(() => {
-      timeLeft--;
-      let mins = Math.floor(timeLeft / 60);
-      let secs = timeLeft % 60;
-      timerDisplay.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('webcam').srcObject = null;
-        document.getElementById('status-text').innerText = "ئامادەبوونەکەت بە سەرکەوتوویی نێردرا!";
+    // پشکنین کە ئایا بەکارهێنەر لۆگینی کردووە
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // وەرگرتنی یوزەرنەیمەکە لە ئیمێڵەکەوە
+        const username = user.email.split('@')[0];
+        document.getElementById('userEmail').innerText = "قوتابی: " + username;
+      } else {
+        // ئەگەر لۆگینی نەکردبوو، بیگوازەرەوە بۆ لاپەڕەی لۆگین
+        window.location.href = "login.html";
       }
-    }, 1000);
-  }
-</script>
+    });
+
+    function recordAttendance() {
+      const user = auth.currentUser;
+      const statusDiv = document.getElementById('status');
+
+      if (!user) return;
+
+      const username = user.email.split('@')[0];
+
+      // تۆمارکردنی زانیاری لە Firestore
+      db.collection("attendance").add({
+        studentId: username,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        date: new Date().toLocaleDateString('en-CA') // ڕێکەوت بە شێوازی YYYY-MM-DD
+      })
+      .then(() => {
+        statusDiv.className = "status-msg status-success";
+        statusDiv.style.display = "block";
+        statusDiv.innerText = "✅ ئامادەبوونت بە سەرکەوتوویی تۆمارکرا!";
+      })
+      .catch((error) => {
+        statusDiv.className = "status-msg status-error";
+        statusDiv.style.display = "block";
+        statusDiv.innerText = "❌ هەڵەیەک ڕوویدا: " + error.message;
+      });
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  </script>
 
 </body>
 </html>
