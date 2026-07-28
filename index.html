@@ -20,125 +20,93 @@
     
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        #map { height: 450px; width: 100%; border-radius: 1rem; z-index: 1; }
+        #map { height: 550px; width: 100%; border-radius: 1rem; z-index: 1; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800">
+<body class="bg-slate-100 min-h-screen text-slate-800">
 
     <!-- 1. LOGIN PAGE -->
-    <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-        <div class="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6">
-            
+    <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950">
+        <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 space-y-6">
             <div class="text-center space-y-2">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 mb-2">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 mb-2 text-2xl">
                     🎓
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-800">سیستەمی قوتابیان</h1>
-                <p class="text-sm text-slate-500">تکایە ئیمێڵ و پاسۆردەکەت بنووسە بۆ چوونەژوورەوە</p>
+                <h1 class="text-2xl font-extrabold text-slate-800">سیستەمی بەڕێوەبردن</h1>
+                <p class="text-sm text-slate-500">تکایە چوونەژوورەوە ئەنجام بدە</p>
             </div>
 
-            <div id="loginAlert" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300"></div>
+            <div id="loginAlert" class="hidden p-4 rounded-xl text-sm font-medium"></div>
 
             <form id="loginForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">ئیمێڵ (Email)</label>
-                    <input type="email" id="email" required placeholder="muhammed@best.inst.com" dir="ltr"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition text-left">
+                    <input type="email" id="email" required placeholder="admin@best.inst.com" dir="ltr"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-left">
                 </div>
-
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">تێپەڕەواشە (Password)</label>
                     <input type="password" id="password" required placeholder="••••••••" dir="ltr"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition text-left">
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-left">
                 </div>
-
                 <button type="submit" id="submitBtn"
-                    class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition duration-200 shadow-lg shadow-indigo-100 flex items-center justify-center space-x-2 space-x-reverse">
-                    <span>چوونەژوورەوە</span>
+                    class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-lg">
+                    چوونەژوورەوە
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- HEADER (SHARED) -->
-    <header id="appHeader" class="hidden bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                    🎓
+    <!-- 2. MAIN APP CONTAINER (SHARED HEADER) -->
+    <div id="appContainer" class="hidden min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <span class="text-2xl">📍</span>
+                    <h1 class="font-bold text-lg text-slate-800">داشبۆردی سەرپەرشتیار (لایڤ ماپ و ئامادەبوون)</h1>
                 </div>
-                <div>
-                    <h1 class="font-bold text-slate-900 leading-none">سیستەمی قوتابیان</h1>
-                    <span id="roleTitle" class="text-xs text-slate-500">پشکنینی ئامادەبوون</span>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <span id="userEmailDisplay" class="text-sm font-medium text-slate-600 dir-ltr"></span>
+                    <button id="logoutBtn" class="px-4 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition">
+                        دەرچوون
+                    </button>
                 </div>
             </div>
-            
-            <div class="flex items-center space-x-4 space-x-reverse">
-                <span id="userEmailDisplay" class="text-sm font-medium text-slate-600 dir-ltr"></span>
-                <button id="logoutBtn" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">
-                    دەرچوون
-                </button>
-            </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- 2. STUDENT DASHBOARD -->
-    <div id="studentSection" class="hidden max-w-lg mx-auto p-6 space-y-6 mt-8">
-        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-5">
-            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-3xl">
-                📍
-            </div>
-            <h2 class="text-xl font-bold text-slate-800">تۆمارکردنی ئامادەبوون</h2>
-            
-            <p id="studentPermissionMsg" class="text-sm text-slate-500 leading-relaxed">
-                داگرتنی دوگمەی خوارەوە بەکاربێنە بۆ ناردنی لۆکەیشنی مۆبایلەکەت و تۆمارکردنی ئامادەبوون.
-            </p>
-
-            <button id="requestLocationBtn" onclick="sendStudentLocation()" 
-                class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition duration-200 shadow-md">
-                📍 چالاککردن و ناردنی لۆکەیشن
-            </button>
-
-            <div id="studentStatusBadge" class="inline-block px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-600">
-                چاوەڕوانی ناردنی لۆکەیشنە...
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. ADMIN DASHBOARD -->
-    <div id="adminSection" class="hidden max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Left: Student List -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-                <h3 class="font-bold text-slate-800 text-lg flex items-center justify-between">
-                    <span>👥 لیستی قوتابیان</span>
-                    <span id="studentCount" class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-semibold">0</span>
-                </h3>
+        <!-- ADMIN DASHBOARD CONTENT -->
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 
-                <div id="studentListContainer" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
-                    <p class="text-xs text-slate-400 text-center py-4">لەگەڕاندایە بۆ قوتابیان...</p>
+                <!-- Left Column: Student List & Live Status -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4 lg:col-span-1">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-sm">👥 قوتابییە تۆمارکراوەکان</h3>
+                        <span id="studentCount" class="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-bold">0</span>
+                    </div>
+                    
+                    <div id="studentListContainer" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                        <p class="text-xs text-slate-400 text-center py-6">چاوەڕوانی چالاکبوون...</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Right: Live Map -->
-            <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-3">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        📍 نەخشەی لۆکەیشنی ڕاستەوخۆی قوتابیان
-                    </h3>
-                    <span class="text-xs font-mono text-slate-400">Live Updates</span>
+                <!-- Right Column: Live Map -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-3 lg:col-span-3">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-bold text-slate-800 text-sm">🗺️ نەخشەی ڕاستەوخۆی لۆکەیشنی قوتابیان</h3>
+                        <span class="text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-full">● Live Tracking</span>
+                    </div>
+                    <div id="map"></div>
                 </div>
-                <div id="map"></div>
-            </div>
 
-        </div>
+            </div>
+        </main>
     </div>
 
     <!-- FIREBASE & LOGIC SCRIPT -->
     <script>
-        // 🚨 ئیمێڵی ئەدمین لێرە دیاری بکە:
-        const ADMIN_EMAIL = "admin@best.inst.com";
+        const ADMIN_EMAIL = "admin@best.inst.com"; // ئیمێڵی ئەدمینەکەت لێرە دڵنیا ببەرەوە
 
         const firebaseConfig = {
             apiKey: "AIzaSyDRJHRXsrOXm78zILvHZ9tA8fhpbHHOmpA",
@@ -156,189 +124,102 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentUser = null;
         let map = null;
         let markersMap = {};
 
-        // UI Elements
         const loginSection = document.getElementById('loginSection');
-        const appHeader = document.getElementById('appHeader');
-        const studentSection = document.getElementById('studentSection');
-        const adminSection = document.getElementById('adminSection');
+        const appContainer = document.getElementById('appContainer');
         const loginForm = document.getElementById('loginForm');
         const loginAlert = document.getElementById('loginAlert');
         const submitBtn = document.getElementById('submitBtn');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
-        const roleTitle = document.getElementById('roleTitle');
-        const studentPermissionMsg = document.getElementById('studentPermissionMsg');
-        const studentStatusBadge = document.getElementById('studentStatusBadge');
-        const requestLocationBtn = document.getElementById('requestLocationBtn');
         const studentListContainer = document.getElementById('studentListContainer');
         const studentCount = document.getElementById('studentCount');
 
-        function showLoginAlert(message, isError = true) {
-            loginAlert.textContent = message;
-            loginAlert.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-green-50', 'text-green-600');
-            loginAlert.classList.add(isError ? 'bg-red-50' : 'bg-green-50', isError ? 'text-red-600' : 'text-green-600');
-        }
-
-        // Auth Listener
+        // Auth State Observer
         auth.onAuthStateChanged((user) => {
             if (user) {
-                currentUser = user;
                 loginSection.classList.add('hidden');
-                appHeader.classList.remove('hidden');
+                appContainer.classList.remove('hidden');
                 userEmailDisplay.textContent = user.email;
 
-                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                    roleTitle.textContent = "پانێڵی سەرپەرشتیار (Admin)";
-                    adminSection.classList.remove('hidden');
-                    studentSection.classList.add('hidden');
-                    initAdminDashboard();
-                } else {
-                    roleTitle.textContent = "تۆمارکردنی ئامادەبوون";
-                    studentSection.classList.remove('hidden');
-                    adminSection.classList.add('hidden');
-                    initStudentDashboard();
-                }
+                // Initialize Admin Map & Data
+                initAdminDashboard();
             } else {
-                currentUser = null;
-                appHeader.classList.add('hidden');
-                studentSection.classList.add('hidden');
-                adminSection.classList.add('hidden');
+                appContainer.classList.add('hidden');
                 loginSection.classList.remove('hidden');
             }
         });
 
-        // Login Submit
+        // Login Handler
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>تکایە چاوەڕێ بکە...</span>';
+            submitBtn.textContent = 'چاوەڕێ بکە...';
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
             } catch (error) {
-                showLoginAlert('ئیمێڵ یان تێپەڕەواشە هەڵەیە!', true);
+                loginAlert.textContent = 'ئیمێڵ یان تێپەڕەواشە هەڵەیە!';
+                loginAlert.classList.remove('hidden');
+                loginAlert.className = 'p-4 rounded-xl text-sm font-medium bg-red-50 text-red-600';
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>چوونەژوورەوە</span>';
+                submitBtn.textContent = 'چوونەژوورەوە';
             }
         });
 
-        // Logout Event
-        logoutBtn.addEventListener('click', async () => {
-            if (currentUser && currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                await db.collection('checkins').doc(currentUser.uid).set({
-                    isOnline: false,
-                    lastOfflineTime: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-            }
-            auth.signOut();
+        // Proper Logout Handler
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.reload(); // بۆ دڵنیابوون لە خاوێنکردنەوەی سێشنەکە
+            });
         });
 
-        // --- STUDENT LOGIC ---
-        async function initStudentDashboard() {
-            await db.collection('checkins').doc(currentUser.uid).set({
-                email: currentUser.email,
-                isOnline: true,
-                lastOnlineTime: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-        }
-
-        function sendStudentLocation() {
-            if (!navigator.geolocation) {
-                alert("وێبگەڕەکەت پشتگیری وەرگرتنی لۆکەیشن ناکات.");
-                return;
-            }
-
-            studentStatusBadge.textContent = "لە هەوڵی وەرگرتنی لۆکەیشندایە...";
-            studentStatusBadge.className = "inline-block px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-600";
-            requestLocationBtn.disabled = true;
-
-            const options = {
-                enableHighAccuracy: false, // Fast resolution
-                timeout: 10000,             // 10 seconds timeout
-                maximumAge: 0
-            };
-
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-
-                    studentPermissionMsg.textContent = "لۆکەیشنی مۆبایلەکەت وەرگیرا و بە سەرکەوتوویی لە سێرڤەر تۆمارکرا.";
-                    studentStatusBadge.textContent = "🟢 ئامادەبوونت تۆمارکراوە";
-                    studentStatusBadge.className = "inline-block px-4 py-2 rounded-xl text-xs font-bold bg-green-50 text-green-700";
-                    requestLocationBtn.disabled = false;
-
-                    // Send to Firestore
-                    db.collection('checkins').doc(currentUser.uid).set({
-                        email: currentUser.email,
-                        location: new firebase.firestore.GeoPoint(lat, lng),
-                        lastLocationUpdate: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
-                },
-                (error) => {
-                    requestLocationBtn.disabled = false;
-                    let msg = "کێشەیەک ڕوویدا!";
-                    if (error.code === error.PERMISSION_DENIED) {
-                        msg = "مۆڵەتەکە رەتکرایەوە. تکایە مۆڵەتی Location لە وێبگەڕەکەت بدە.";
-                    } else if (error.code === error.POSITION_UNAVAILABLE) {
-                        msg = "تکایە دڵنیا ببەرەوە کە GPSی مۆبایلەکەت هەڵکراوە.";
-                    } else if (error.code === error.TIMEOUT) {
-                        msg = "کاتی وەرگرتن بەسەرچوو، دووبارە دگمەکە دابگرەرەوە.";
-                    }
-
-                    alert(msg);
-                    studentStatusBadge.textContent = "🔴 " + msg;
-                    studentStatusBadge.className = "inline-block px-4 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-600";
-                },
-                options
-            );
-        }
-
-        // --- ADMIN LOGIC ---
+        // Admin Dashboard & Live Map Logic
         function initAdminDashboard() {
             if (!map) {
-                map = L.map('map').setView([36.1912, 44.0091], 12);
+                map = L.map('map').setView([36.1912, 44.0091], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© OpenStreetMap'
                 }).addTo(map);
             }
 
+            // Realtime listener for checkins / locations
             db.collection('checkins').onSnapshot((snapshot) => {
                 studentListContainer.innerHTML = '';
-                let totalStudents = 0;
+                let count = 0;
 
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const uid = doc.id;
 
+                    // ئەگەر ئەکاونتی ئەدمین خۆی بوو لە لیستەکە لێی گەڕێ
                     if (data.email && data.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
 
-                    totalStudents++;
+                    count++;
                     const isOnline = data.isOnline ?? false;
-                    const onlineTime = data.lastOnlineTime ? new Date(data.lastOnlineTime.toDate()).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : 'نادیار';
-                    const offlineTime = data.lastOfflineTime ? new Date(data.lastOfflineTime.toDate()).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : 'نادیار';
+                    const timeStr = data.lastLocationUpdate ? new Date(data.lastLocationUpdate.toDate()).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}) : 'نادیار';
 
-                    const item = document.createElement('div');
-                    item.className = "p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs";
-                    item.innerHTML = `
-                        <div class="space-y-1">
-                            <p class="font-bold text-slate-700 dir-ltr text-right">${data.email}</p>
-                            <p class="text-slate-400">ئۆنلاین: ${onlineTime} ${!isOnline ? '| ئۆفلاین: ' + offlineTime : ''}</p>
+                    // Render in sidebar list
+                    const card = document.createElement('div');
+                    card.className = "p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs";
+                    card.innerHTML = `
+                        <div>
+                            <p class="font-bold text-slate-800 dir-ltr text-right">${data.email || 'قوتابی'}</p>
+                            <p class="text-slate-400 mt-0.5">نوێترین لۆکەیشن: ${timeStr}</p>
                         </div>
-                        <span class="px-2 py-1 rounded-lg font-bold ${isOnline ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'}">
-                            ${isOnline ? '🟢 ئۆنلاین' : '🔴 ئۆفلاین'}
+                        <span class="px-2.5 py-1 rounded-lg font-bold ${isOnline ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}">
+                            ${isOnline ? '🟢 ئۆنلاین' : '⚪ ئۆفلاین'}
                         </span>
                     `;
-                    studentListContainer.appendChild(item);
+                    studentListContainer.appendChild(card);
 
+                    // Render / Update Marker on Map
                     if (data.location) {
                         const lat = data.location.latitude;
                         const lng = data.location.longitude;
@@ -346,14 +227,18 @@
 
                         if (markersMap[uid]) {
                             markersMap[uid].setLatLng(latlng);
+                            markersMap[uid].setPopupContent(`<b>${data.email}</b><br>کاتی نوێکردنەوە: ${timeStr}`);
                         } else {
                             markersMap[uid] = L.marker(latlng).addTo(map)
-                                .bindPopup(`<b>${data.email}</b><br>دواین شوێن`);
+                                .bindPopup(`<b>${data.email}</b><br>کاتی نوێکردنەوە: ${timeStr}`);
                         }
                     }
                 });
 
-                studentCount.textContent = totalStudents;
+                studentCount.textContent = count;
+                if (count === 0) {
+                    studentListContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">هیچ قوتابییەک لۆکەیشنی نەناردووە.</p>`;
+                }
             });
         }
     </script>
