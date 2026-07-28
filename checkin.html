@@ -1,206 +1,142 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تۆمارکردنی ئامادەبوونی قوتابی</title>
-  
-  <style>
-    @font-face {
-      font-family: 'NRT';
-      src: url('NRT-Reg.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تۆمارکردنی ئامادەبوون</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'NRT', Tahoma, sans-serif;
-    }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    body {
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-      animation: fadeIn 0.8s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .icon {
-      font-size: 50px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 8px;
-      font-size: 22px;
-    }
-
-    .user-info {
-      background: #eef2f7;
-      padding: 12px;
-      border-radius: 10px;
-      color: #34495e;
-      font-size: 15px;
-      margin-bottom: 25px;
-      font-weight: bold;
-    }
-
-    button.checkin-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #00b09b, #96c93d);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
-    }
-
-    button.checkin-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
-    }
-
-    button.logout-btn {
-      background: transparent;
-      color: #e74c3c;
-      border: 1px solid #e74c3c;
-      padding: 8px 16px;
-      border-radius: 8px;
-      margin-top: 25px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.3s ease;
-    }
-
-    button.logout-btn:hover {
-      background: #e74c3c;
-      color: white;
-    }
-
-    .status-msg {
-      margin-top: 20px;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .status-success {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-error {
-      background: #f8d7da;
-      color: #721c24;
-    }
-  </style>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-100 min-h-screen p-4 md:p-8">
 
-  <div class="card">
-    <div class="icon">📍</div>
-    <h2>تۆمارکردنی ئامادەبوون</h2>
-    <div class="user-info" id="userEmail">بەخێربییت...</div>
+    <div class="max-w-xl mx-auto space-y-6">
+        
+        <!-- Header / User Info -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                    🎓
+                </div>
+                <div>
+                    <h2 class="font-bold text-slate-800 text-lg" id="userDisplayName">به‌خێربێیت</h2>
+                    <p class="text-xs text-slate-400" id="userEmail">باردەکرێت...</p>
+                </div>
+            </div>
+            <button id="logoutBtn" class="px-4 py-2 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition">
+                چوونەدەرەوە
+            </button>
+        </div>
 
-    <button class="checkin-btn" onclick="recordAttendance()">تۆمارکردنی ئامادەبوون (Check-in)</button>
+        <!-- Checkin Card -->
+        <div class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center space-y-6">
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-800">تۆمارکردنی ئامادەبوون</h1>
+                <p class="text-slate-500 text-sm mt-1">تکایە دوگمەی خوارەوە داگرە بۆ تۆمارکردنی ئامادەبوونی ئەمڕۆت</p>
+            </div>
 
-    <div id="status" class="status-msg"></div>
+            <!-- Status Alert -->
+            <div id="statusBox" class="hidden p-4 rounded-2xl text-sm font-semibold transition-all duration-300"></div>
 
-    <br>
-    <button class="logout-btn" onclick="logout()">دەروونەچوون (Logout)</button>
-  </div>
+            <button 
+                id="checkinBtn"
+                class="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-lg rounded-2xl shadow-lg shadow-emerald-200 transition duration-200 transform active:scale-95 flex items-center justify-center space-x-2 space-x-reverse"
+            >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>تۆمارکردنی ئامادەبوون</span>
+            </button>
+        </div>
 
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    </div>
 
-  <script>
-    // ⚠️ کلیلەکانی فایەربەیزی خۆت لێرە دابنێ
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+    <script>
+        // کلیلە ڕاستەقینەکانی فایەربەیزی خۆت
+        const firebaseConfig = {
+            apiKey: "AIzaSyDRJHRXsrOxm78zILvHZ9tA8fhpbHH0mpA",
+            authDomain: "summer-trainimg.firebaseapp.com",
+            projectId: "summer-trainimg",
+            storageBucket: "summer-trainimg.firebasestorage.app",
+            messagingSenderId: "1064679034578",
+            appId: "1:1064679034578:web:f334161e9e6a2b11a6ee33"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    // پشکنین کە ئایا بەکارهێنەر لۆگینی کردووە
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // وەرگرتنی یوزەرنەیمەکە لە ئیمێڵەکەوە
-        const username = user.email.split('@')[0];
-        document.getElementById('userEmail').innerText = "قوتابی: " + username;
-      } else {
-        // ئەگەر لۆگینی نەکردبوو، بیگوازەرەوە بۆ لاپەڕەی لۆگین
-        window.location.href = "login.html";
-      }
-    });
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userEmail = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const checkinBtn = document.getElementById('checkinBtn');
+        const statusBox = document.getElementById('statusBox');
 
-    function recordAttendance() {
-      const user = auth.currentUser;
-      const statusDiv = document.getElementById('status');
+        // پێداچوونەوەی باری چوونەژوورەوە
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                const username = user.email.split('@')[0];
+                userDisplayName.innerText = `بەخێربێیت، ${username}`;
+                userEmail.innerText = user.email;
+            } else {
+                // ئەگەر لۆگین نەبووبوو، بگەڕێتەوە بۆ لۆگین
+                window.location.href = 'login.html';
+            }
+        });
 
-      if (!user) return;
+        // کلیک لەسەر تۆمارکردنی ئامادەبوون
+        checkinBtn.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
 
-      const username = user.email.split('@')[0];
+            checkinBtn.disabled = true;
+            checkinBtn.innerText = 'تۆمار دەکرێت...';
 
-      // تۆمارکردنی زانیاری لە Firestore
-      db.collection("attendance").add({
-        studentId: username,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        date: new Date().toLocaleDateString('en-CA') // ڕێکەوت بە شێوازی YYYY-MM-DD
-      })
-      .then(() => {
-        statusDiv.className = "status-msg status-success";
-        statusDiv.style.display = "block";
-        statusDiv.innerText = "✅ ئامادەبوونت بە سەرکەوتوویی تۆمارکرا!";
-      })
-      .catch((error) => {
-        statusDiv.className = "status-msg status-error";
-        statusDiv.style.display = "block";
-        statusDiv.innerText = "❌ هەڵەیەک ڕوویدا: " + error.message;
-      });
-    }
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                
+                await db.collection('attendances').add({
+                    uid: user.uid,
+                    email: user.email,
+                    date: today,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-    function logout() {
-      auth.signOut().then(() => {
-        window.location.href = "login.html";
-      });
-    }
-  </script>
+                showStatus('ئامادەبوونی ئەمڕۆت بە سەرکەوتوویی تۆمارکرا! 🎉', 'bg-emerald-50 text-emerald-700 border border-emerald-200');
+                checkinBtn.innerText = 'ئامادەبوون تۆمارکرا✓';
+                checkinBtn.className = "w-full py-4 px-6 bg-slate-200 text-slate-500 font-bold text-lg rounded-2xl cursor-not-allowed";
 
+            } catch (error) {
+                console.error("Firestore Error:", error);
+                showStatus('خەتا لە تۆمارکردن دروستبوو، تکایە دواتر تاقی بکەرەوە.', 'bg-rose-50 text-rose-700 border border-rose-200');
+                checkinBtn.disabled = false;
+                checkinBtn.innerText = 'تۆمارکردنی ئامادەبوون';
+            }
+        });
+
+        // چوونەدەرەوە
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        });
+
+        function showStatus(msg, classes) {
+            statusBox.className = `p-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${classes}`;
+            statusBox.innerText = msg;
+            statusBox.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
