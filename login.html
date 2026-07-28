@@ -1,200 +1,139 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>چوونەژوورەوەی قوتابی - ڕاهێنانی هاوینە</title>
-  
-  <!-- زیادکردنی فۆنتی NRT -->
-  <style>
-    @font-face {
-      font-family: 'NRT';
-      src: url('NRT-Reg.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چوونەژوورەوەی قوتابی</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'NRT', Tahoma, sans-serif;
-    }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    body {
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-    .login-container {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 0.8s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo-icon {
-      font-size: 50px;
-      margin-bottom: 15px;
-    }
-
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    p.subtitle {
-      color: #7f8c8d;
-      font-size: 14px;
-      margin-bottom: 30px;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 20px;
-      text-align: right;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #34495e;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      background: #f8f9fa;
-      border: 2px solid #e1e8ed;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #333;
-      transition: all 0.3s ease;
-    }
-
-    input:focus {
-      border-color: #3498db;
-      background: #fff;
-      outline: none;
-      box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #00b09b, #96c93d);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
-      margin-top: 10px;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 176, 155, 0.4);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    .error-msg {
-      color: #e74c3c;
-      margin-top: 15px;
-      font-size: 14px;
-      background: #fde8e8;
-      padding: 10px;
-      border-radius: 8px;
-      display: none;
-    }
-  </style>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen flex items-center justify-center p-4">
 
-  <div class="login-container">
-    <div class="logo-icon">🎓</div>
-    <h2>سیستمی ئامادەبوونی قوتابیان</h2>
-    <p class="subtitle">تکایە بۆ چوونەژوورەوە زانیارییەکانت بنووسە</p>
-    
-    <div class="input-group">
-      <label for="username">ناوی بەکارهێنەر (یوزەرنەیم)</label>
-      <input type="text" id="username" placeholder="بۆ نموونە: student123" required>
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-8 space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 mb-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-extrabold text-slate-800">سیستەمی قوتابیان</h1>
+            <p class="text-sm text-slate-5-0 text-slate-500">تکایە ناوی بەکارهێنەر و پاسۆردەکەت بنووسە</p>
+        </div>
+
+        <!-- Alert Message Container -->
+        <div id="alertBox" class="hidden p-4 rounded-xl text-sm font-semibold transition-all duration-300 text-center"></div>
+
+        <!-- Form -->
+        <form id="loginForm" class="space-y-4">
+            
+            <div>
+                <label for="username" class="block text-sm font-medium text-slate-700 mb-1">ناوی بەکارهێنەر (Username)</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    required 
+                    placeholder="نموونە: student1"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-left dir-ltr"
+                >
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-700 mb-1">تێپەڕەواشە (Password)</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    required 
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-left dir-ltr"
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                id="submitBtn"
+                class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center"
+            >
+                <span>چوونەژوورەوە</span>
+            </button>
+
+        </form>
+
     </div>
 
-    <div class="input-group">
-      <label for="password">پاسۆرد</label>
-      <input type="password" id="password" placeholder="••••••••" required>
-    </div>
+    <script>
+        // کلیلە ڕاستەقینەکانی فایەربەیزی خۆت
+        const firebaseConfig = {
+            apiKey: "AIzaSyDRJHRXsrOxm78zILvHZ9tA8fhpbHH0mpA",
+            authDomain: "summer-trainimg.firebaseapp.com",
+            projectId: "summer-trainimg",
+            storageBucket: "summer-trainimg.firebasestorage.app",
+            messagingSenderId: "1064679034578",
+            appId: "1:1064679034578:web:f334161e9e6a2b11a6ee33"
+        };
 
-    <button onclick="loginUser()">چوونەژوورەوە</button>
-    <div id="error" class="error-msg"></div>
-  </div>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+        const loginForm = document.getElementById('loginForm');
+        const alertBox = document.getElementById('alertBox');
+        const submitBtn = document.getElementById('submitBtn');
 
-  <script>
-    // ⚠️ کلیلەکانی فایەربەیزی خۆت لێرە دابنێ
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+            // ئەگەر ئیمێڵی تێنەنوسیبوو، خۆکارانە دامێنەکەی بۆ زیاد دەکات
+            const email = username.includes('@') ? username : `${username}@institute.com`;
 
-    function loginUser() {
-      const usernameInput = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('error');
+            // هەنگاوی بارکردن
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>تکایە چاوەڕێ بکە...</span>`;
+            showAlert('', 'hidden');
 
-      if (!usernameInput || !password) {
-        errorDiv.style.display = "block";
-        errorDiv.innerText = "تکایە هەردوو خانه پڕبکەرەوە!";
-        return;
-      }
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showAlert('بە سەرکەوتوویی چوویەتە ژوورەوە! ڕەوانە دەکرێیت...', 'bg-emerald-50 text-emerald-700 border border-emerald-200');
+                
+                setTimeout(() => {
+                    window.location.href = 'checkin.html';
+                }, 1200);
 
-      // بەستنەوەی یوزەرنەیم بە ئیمێڵی دەستکرد بۆ فایەربەیس
-      const email = usernameInput.includes('@') ? usernameInput : usernameInput + "@institute.com";
+            } catch (error) {
+                console.error("Login Error:", error);
+                let message = 'ناونیشان یان تێپەڕەواشە هەڵەیە!';
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    message = 'ناوی بەکارهێنەر یان پاسۆرد هەڵەیە!';
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = 'هەوڵدانی زۆر! تکایە دواتر تاقی بکەرەوە.';
+                }
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          window.location.href = "checkin.html";
-        })
-        .catch((error) => {
-          errorDiv.style.display = "block";
-          errorDiv.innerText = "ناوی بەکارهێنەر یان پاسۆرد هەڵەیە!";
+                showAlert(message, 'bg-rose-50 text-rose-700 border border-rose-200');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>چوونەژوورەوە</span>`;
+            }
         });
-    }
-  </script>
 
+        function showAlert(msg, classes) {
+            alertBox.className = `p-4 rounded-xl text-sm font-semibold text-center transition-all duration-300 ${classes}`;
+            alertBox.innerText = msg;
+        }
+    </script>
 </body>
 </html>
