@@ -9,10 +9,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs (Compat v10) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDKs (v9.23.0 Compat - سەقامگیرترین ڤێرشن) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
@@ -36,7 +36,7 @@
             <div class="flex items-center space-x-4 space-x-reverse">
                 <span id="userEmailDisplay" class="text-sm font-medium text-slate-600 dir-ltr"></span>
                 <button id="logoutBtn" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">
-                    دەقەوتانبوون / دەرچوون
+                    دەرچوون
                 </button>
             </div>
         </div>
@@ -73,7 +73,9 @@
         };
 
         // پێناسەکردنی فایەربەیس
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -91,7 +93,7 @@
             }
         }
 
-        // پشکنینی باری چوونه‌ژووره‌وه‌ی بهۆکار
+        // پشکنینی باری چوونەژوورەوەی بەکارهێنەر
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // بەکارهێنەر لۆگینە
